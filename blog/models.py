@@ -9,7 +9,7 @@ class UserInfo(AbstractUser):
 
     nid = models.AutoField(primary_key=True)
     telephone = models.CharField(max_length=11,null=True)
-    avatar = models.FileField(upload_to='avatar/',default=True) #用户头像 upload_to:储存文件
+    avator = models.FileField(upload_to='avator/',default=True) #用户头像 upload_to:储存文件
     create_time = models.DateTimeField(verbose_name='创建时间',auto_now_add=True)
 
     blog = models.OneToOneField(to='Blog',to_field='nid',null=True,on_delete=models.CASCADE)
