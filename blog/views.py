@@ -2,16 +2,34 @@ from django.shortcuts import render,HttpResponse,redirect
 from django.contrib import auth
 from django.http import JsonResponse
 from PIL import Image,ImageDraw,ImageFont
-import random
 from io import BytesIO
-
+import random
 
 def login(request):
 
     if request.method == 'POST':
+
+        response = {"user":None,"msg":None}
+
         user = request.POST.get("user")
         pwd =request.POST.get("pwd")
-        view_
+        view_code = str(request.POST.get("view_code"))
+        view_code_str = request.session.get("view_code_str")
+
+        print(type(view_code_str),view_code_str,type(view_code),view_code)
+
+        if view_code.upper() == view_code_str.upper():
+            user=auth.authenticate(username=user,password=pwd)
+            if user:
+                auth.login(request,user)                #requset.user = 当前登陆对象
+                response["user"] = user.username
+            else:
+                response["msg"] = "username or password is error!"
+
+        else:
+            response["msg"] = "valid code error"
+
+        return JsonResponse(response)
 
     return render(request,'login.html')
 
@@ -30,13 +48,14 @@ def get_view_code_img(request):
     for i in range(5):
 
         random_num = str(random.randint(0,9))
-        random_low_alpha = chr(random.randint(95,122))
+        random_low_alpha = chr(random.randint(97,122))
         random_upper_alpha = chr(random.randint(65,90))
         random_char = random.choice([random_num,random_low_alpha,random_upper_alpha])
 
-        darw.text((i*20+50,5),random_upper_alpha,get_img_color(),font=word_font)
+        darw.text((i*20+50,5),random_char,get_img_color(),font=word_font)
 
         view_code_str += random_char
+
 
     width = 150
     height = 35
@@ -55,9 +74,13 @@ def get_view_code_img(request):
         darw.arc((x,y,x+4,y+4),0,90,fill=get_img_color())
 
 
+    request.session['view_code_str'] = view_code_str
+    print(view_code_str)
+    print(request.session['view_code_str'])
     f = BytesIO()
     img.save(f,"png")
     data = f.getvalue()
 
 
     return HttpResponse(data)
+

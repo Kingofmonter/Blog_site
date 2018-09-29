@@ -1,31 +1,29 @@
-$(function(){
+$(function () {
 
-    $("#view_code_img").click(function(){
-        
-        $(this)[0].src+="?"
+    $("#view_code_img").click(function () {
 
-        });
-
-
-    $(".login_btn").click.function(){
-
-        $.ajax({
-            url:"",
-            type:"",
-            data:{
-                user:$("username").val(),
-                pwd:$("password").val(),
-                view_code:$("#view_code").val(),
-                csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val(),
-            },
-            success:function(data){
-                console.log(data)
-            }
-
-        })
-
-    }
-    
-
+        $(this)[0].src += "?"
 
     });
+
+    $("#login-button").click(function () {
+
+
+        $.ajax({
+           url:"",
+            type:"post",
+            data:{
+               user:$("#username").val(),
+                pwd:$("#password").val(),
+                view_code:$("#view_code ").val(),
+                csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val()
+            },
+            success:function (data) {
+               console.log(data)
+
+            }
+        })
+    })
+
+
+});
