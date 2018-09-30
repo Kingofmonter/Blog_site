@@ -13,12 +13,12 @@ def login(request):
 
         response = {"user": None, "msg": None}
 
+        #接收数据
         user = request.POST.get("user")
         pwd = request.POST.get("pwd")
         view_code = str(request.POST.get("view_code"))
         view_code_str = request.session.get("view_code_str")
 
-        print(type(view_code_str), view_code_str, type(view_code), view_code)
 
         if view_code.upper() == view_code_str.upper():
             user = auth.authenticate(username=user, password=pwd)
@@ -56,25 +56,26 @@ def get_view_code_img(request):
 
         view_code_str += random_char
 
-    width = 150
-    height = 35
 
-    for i in range(6):
-        x1 = random.randint(0, width)
-        y1 = random.randint(0, height)
-        x2 = random.randint(0, width)
-        y2 = random.randint(0, height)
-        darw.line((x1, y1, x2, y2), fill=get_img_color())
+    # width = 150
+    # height = 35
 
-    for i in range(100):
-        darw.point([random.randint(0, width), random.randint(0, height)], fill=get_img_color())
-        x = random.randint(0, width)
-        y = random.randint(0, height)
-        darw.arc((x, y, x + 4, y + 4), 0, 90, fill=get_img_color())
+    # 噪点和干扰线
+    # for i in range(6):
+    #     x1 = random.randint(0, width)
+    #     y1 = random.randint(0, height)
+    #     x2 = random.randint(0, width)
+    #     y2 = random.randint(0, height)
+    #     darw.line((x1, y1, x2, y2), fill=get_img_color())
+    #
+    # for i in range(100):
+    #     darw.point([random.randint(0, width), random.randint(0, height)], fill=get_img_color())
+    #     x = random.randint(0, width)
+    #     y = random.randint(0, height)
+    #     darw.arc((x, y, x + 4, y + 4), 0, 90, fill=get_img_color())
 
     request.session['view_code_str'] = view_code_str
-    print(view_code_str)
-    print(request.session['view_code_str'])
+
     f = BytesIO()
     img.save(f, "png")
     data = f.getvalue()
@@ -113,3 +114,9 @@ def register(request):
     form = UserForm()
 
     return render(request, 'register.html', {"form": form})
+
+
+
+def index(request):
+
+    return render(request,'index.html')
