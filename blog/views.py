@@ -16,11 +16,21 @@ def login(request):
 
         response = {"user": None, "msg": None}
 
+<<<<<<< HEAD
         username = request.POST.get("user")
         password = request.POST.get("pwd")
         view_code = str(request.POST.get("view_code"))
         view_code_str = request.session.get("view_code_str")
 
+=======
+        #接收数据
+        user = request.POST.get("user")
+        pwd = request.POST.get("pwd")
+        view_code = str(request.POST.get("view_code"))
+        view_code_str = request.session.get("view_code_str")
+
+
+>>>>>>> origin/master
         if view_code.upper() == view_code_str.upper():
             user = auth.authenticate(username=username, password=password)
             if user:
@@ -57,10 +67,15 @@ def get_view_code_img(request):
 
         view_code_str += random_char
 
-    width = 150
-    height = 35
 
+<<<<<<< HEAD
     # 干扰线，噪点
+=======
+    # width = 150
+    # height = 35
+
+    # 噪点和干扰线
+>>>>>>> origin/master
     # for i in range(6):
     #     x1 = random.randint(0, width)
     #     y1 = random.randint(0, height)
@@ -75,6 +90,10 @@ def get_view_code_img(request):
     #     darw.arc((x, y, x + 4, y + 4), 0, 90, fill=get_img_color())
 
     request.session['view_code_str'] = view_code_str
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
     f = BytesIO()
     img.save(f, "png")
     data = f.getvalue()
@@ -115,6 +134,7 @@ def register(request):
     return render(request, 'register.html', {"form": form})
 
 
+<<<<<<< HEAD
 # 首页
 def index(requset):
     article_list = models.Article.objects.all()
@@ -184,3 +204,9 @@ def digg(request):
     print(request.POST)
 
     return HttpResponse("OK")
+=======
+
+def index(request):
+
+    return render(request,'index.html')
+>>>>>>> origin/master

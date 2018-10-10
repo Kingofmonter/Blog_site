@@ -24,6 +24,10 @@
         integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em"
         crossorigin="anonymous"></script>
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="#">博客</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -38,6 +42,7 @@
         <li class="nav-item">
             <a class="nav-link" href="#">新闻</a>
         </li>
+<<<<<<< HEAD
     </ul>
 
     <ul class="nav justify-content-end">
@@ -52,18 +57,36 @@
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="/logout/">注销</a>
                     <a class="dropdown-item" href="#">修改个人信息</a>
+=======
+
+    </ul>
+    <ul class="nav justify-content-end">
+
+        {% if request.user.is_authenticated %}
+            <li><span class="glyphicon glyphicon-user"></span><a href="#">{{ request.user.username }}</a></li>
+            <li>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="#">Action</a>
+                    <a class="dropdown-item" href="#">Another action</a>
+>>>>>>> origin/master
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="#">Something else here</a>
                 </div>
             </li>
+<<<<<<< HEAD
 
         {% else %}
 
+=======
+        {% else %}
+        
+>>>>>>> origin/master
             <li><a href="/login/" class="nav-link">登陆</a></li>
             <li><a href="/register/" class="nav-link">注册</a></li>
 
         {% endif %}
 
+<<<<<<< HEAD
     </ul>
     </div>
 </nav>
@@ -135,6 +158,49 @@
 
 
 </div>
+=======
 
+    </ul>
+    </div>
+</nav>
+>>>>>>> origin/master
+
+<div class="container-fluid">
+    <div class="row content">
+        <div class="col-md-3">
+            <div class="card border-primary mb-3" style="max-width: 18rem;">
+                <div class="card-header">Header</div>
+                <div class="card-body text-primary">
+                  <h5 class="card-title">Primary card title</h5>
+                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                </div>
+              </div>
+              <div class="card border-secondary mb-3" style="max-width: 18rem;">
+                <div class="card-header">Header</div>
+                <div class="card-body text-secondary">
+                  <h5 class="card-title">Secondary card title</h5>
+                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                </div>
+              </div>
+              <div class="card border-success mb-3" style="max-width: 18rem;">
+                <div class="card-header">Header</div>
+                <div class="card-body text-success">
+                  <h5 class="card-title">Success card title</h5>
+                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                </div>
+              </div>
+              <div class="card border-danger mb-3" style="max-width: 18rem;">
+                <div class="card-header">Header</div>
+                <div class="card-body text-danger">
+                  <h5 class="card-title">Danger card title</h5>
+                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                </div>
+              </div>
+        </div>
+        <div class="col-md-6">222</div>
+        <div class="col-md-3">222</div>
+         
+    </div>
+</div>
 </body>
 </html>

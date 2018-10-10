@@ -25,7 +25,11 @@ urlpatterns = [
     path('login/',views.login),
     path('logout/', views.logout),
     path('register/',views.register),
+<<<<<<< HEAD
     path('index/', views.index),
+=======
+    path('index/',views.index),
+>>>>>>> origin/master
     path('get_view_code_img/',views.get_view_code_img),
     path('digg/',views.digg),
     re_path('^$', views.index),

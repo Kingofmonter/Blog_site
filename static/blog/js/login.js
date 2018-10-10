@@ -19,6 +19,7 @@ $(function () {
                 csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val()
             },
             success:function (data) {
+<<<<<<< HEAD
 
                if(data.user){
                    console.log(1)
@@ -27,6 +28,17 @@ $(function () {
                else {
                    $(".error").text(data.msg).css({"color":"red","margin-left":"15px"})
                }
+=======
+            
+                if(data.user){
+                    location.href = '/index/'
+                }
+                else{
+
+                    $(".error").text(data.msg)
+                }
+
+>>>>>>> origin/master
 
             }
         })
