@@ -1,9 +1,12 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, redirect
+from django.db.models.functions import TruncMonth
 from django.contrib import auth
 from django.http import JsonResponse
+from django.db.models import Count
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
 from .Myforms import *
+from . import models
 import random
 
 
@@ -13,15 +16,13 @@ def login(request):
 
         response = {"user": None, "msg": None}
 
-        user = request.POST.get("user")
-        pwd = request.POST.get("pwd")
+        username = request.POST.get("user")
+        password = request.POST.get("pwd")
         view_code = str(request.POST.get("view_code"))
         view_code_str = request.session.get("view_code_str")
 
-        print(type(view_code_str), view_code_str, type(view_code), view_code)
-
         if view_code.upper() == view_code_str.upper():
-            user = auth.authenticate(username=user, password=pwd)
+            user = auth.authenticate(username=username, password=password)
             if user:
                 auth.login(request, user)  # requset.user = 当前登陆对象
                 response["user"] = user.username
@@ -59,22 +60,21 @@ def get_view_code_img(request):
     width = 150
     height = 35
 
-    for i in range(6):
-        x1 = random.randint(0, width)
-        y1 = random.randint(0, height)
-        x2 = random.randint(0, width)
-        y2 = random.randint(0, height)
-        darw.line((x1, y1, x2, y2), fill=get_img_color())
-
-    for i in range(100):
-        darw.point([random.randint(0, width), random.randint(0, height)], fill=get_img_color())
-        x = random.randint(0, width)
-        y = random.randint(0, height)
-        darw.arc((x, y, x + 4, y + 4), 0, 90, fill=get_img_color())
+    # 干扰线，噪点
+    # for i in range(6):
+    #     x1 = random.randint(0, width)
+    #     y1 = random.randint(0, height)
+    #     x2 = random.randint(0, width)
+    #     y2 = random.randint(0, height)
+    #     darw.line((x1, y1, x2, y2), fill=get_img_color())
+    #
+    # for i in range(100):
+    #     darw.point([random.randint(0, width), random.randint(0, height)], fill=get_img_color())
+    #     x = random.randint(0, width)
+    #     y = random.randint(0, height)
+    #     darw.arc((x, y, x + 4, y + 4), 0, 90, fill=get_img_color())
 
     request.session['view_code_str'] = view_code_str
-    print(view_code_str)
-    print(request.session['view_code_str'])
     f = BytesIO()
     img.save(f, "png")
     data = f.getvalue()
@@ -102,7 +102,7 @@ def register(request):
             if avator:
                 extra["avator"] = avator
 
-            UserInfo.objects.create(username=user, password=pwd, email=email, **extra)
+            UserInfo.objects.create_user(username=user, password=pwd, email=email, **extra)
 
         else:
             print(form.errors)
@@ -113,3 +113,74 @@ def register(request):
     form = UserForm()
 
     return render(request, 'register.html', {"form": form})
+
+
+# 首页
+def index(requset):
+    article_list = models.Article.objects.all()
+
+    return render(requset, 'index.html', {"article_list": article_list})
+
+
+# 注销
+def logout(request):
+    auth.logout(request)
+
+    return redirect('/login/')
+
+
+# 个人站点视图
+def home_site(request, username, **kwargs):
+
+    user = UserInfo.objects.filter(username=username).first()
+
+    # 判断用户存在
+    if not user:
+        return render(request, 'not_found.html')
+
+    # 当前站点所有文章
+    article_list = models.Article.objects.filter(user=user)
+
+    if kwargs:
+
+        condition = kwargs.get("condition")
+        param = kwargs.get("param")
+
+        if condition == "category":
+            article_list = models.Article.objects.filter(user=user).filter(category__title=param)
+        elif condition == "tag":
+            article_list = models.Article.objects.filter(user=user).filter(tags__title=param)
+        else:
+            year, month = param.split('-')
+            article_list = models.Article.objects.filter(user=user).filter(create_time__year=year,
+                                                                           create_time__month=month)
+
+    # 查询站点对象
+    blog = user.blog
+
+    # 分类名称对应的文章数
+    ret = models.Category.objects.values('pk').annotate(c=Count("article__title")).values("title", "c")
+
+    return render(request, "home_site.html",
+                  {"blog": blog, "user": user, "article_list": article_list, "ret": ret, "username": username})
+
+
+# 文章详情
+def article_detail(request, username, article_id):
+
+    user = models.UserInfo.objects.filter(username=username).first()
+    blog = user.blog
+
+    article_obj = models.Article.objects.filter(pk=article_id).first()
+    print(article_obj)
+
+    return render(request, "article_detail.html", locals())
+
+
+
+#点赞
+def digg(request):
+
+    print(request.POST)
+
+    return HttpResponse("OK")

@@ -19,7 +19,14 @@ $(function () {
                 csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val()
             },
             success:function (data) {
-               console.log(data)
+
+               if(data.user){
+                   console.log(1)
+                   location.href='/index/'
+               }
+               else {
+                   $(".error").text(data.msg).css({"color":"red","margin-left":"15px"})
+               }
 
             }
         })

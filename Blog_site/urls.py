@@ -15,12 +15,26 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from django.urls import path
+from django.urls import path,re_path
+from django.views.static import serve
+from Blog_site import settings
 from blog import views
 
 urlpatterns = [
     path('admin/',admin.site.urls),
     path('login/',views.login),
+    path('logout/', views.logout),
     path('register/',views.register),
+    path('index/', views.index),
     path('get_view_code_img/',views.get_view_code_img),
+    path('digg/',views.digg),
+    re_path('^$', views.index),
+
+    #media配置
+    re_path(r"media/(?P<path>.*)$",serve,{"document_root":settings.MEDIA_ROOT}),
+
+    #个人站点
+    re_path('^(?P<username>\w+)$',views.home_site),
+    re_path('^(?P<username>\w+)/(?P<condition>tag|category|archive)/(?P<param>.*)/$',views.home_site),
+    re_path('^(?P<username>\w+)/articles/(?P<article_id>\d+)',views.article_detail)
 ]

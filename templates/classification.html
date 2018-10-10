@@ -1,0 +1,28 @@
+<div>
+    <div class="card border-danger mb-3" style="max-width: 18rem;">
+        <div class="card-header">日期</div>
+        <div class="card-body text-danger">
+            {% for date in date_list %}
+                <p><a href="/{{ user.username }}/archive/{{ date.0 }}">{{ date.0 }}({{ date.1 }})</a></p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="card border-success mb-3" style="max-width: 18rem;">
+        <div class="card-header">分类</div>
+        <div class="card-body text-success">
+            {% for cate in cate_list %}
+                <p><a href="/{{ user.username }}/category/{{ cate.0 }}">{{ cate.0 }}({{ cate.1 }})</a></p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="card border-secondary mb-3" style="max-width: 18rem;">
+        <div class="card-header">标签</div>
+        <div class="card-body text-secondary">
+            {% for tag in tag_list %}
+                <p><a href="/{{ user.username }}/tag/{{ tag.0 }}">{{ tag.0 }}({{ tag.1 }})</a></p>
+            {% endfor %}
+        </div>
+    </div>
+</div>

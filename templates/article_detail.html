@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <script src="/static/blog/js/updown.js"></script>
+
+    {% csrf_token %}
+
+    <div class="article-info">
+        <h3 class="text-center">{{ article_obj }}</h3>
+        <div class="container">
+            {{ article_obj.content|safe }}
+        </div>
+        <div class="social-main">
+            <span class="like">
+                <a href="javascript:;" title="点赞" class="like-up action"><i
+                        class="be be-thumbs-up-o"></i>赞 <i class="count">{{ article_obj.is_up }}</i>
+                </a>
+            </span>
+
+            <span class="dislike">
+                <a href="javascript:;" title="点赞" class="dislike-down action"><i
+                        class="be be-thumbs-up-o"></i>踩<i class="count">0</i>
+                </a>
+            </span>
+            <div class="clear"></div>
+        </div>
+    </div>
+{% endblock %}
