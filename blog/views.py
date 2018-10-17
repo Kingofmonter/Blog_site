@@ -2,12 +2,13 @@ from django.shortcuts import render, HttpResponse, redirect
 from django.db.models.functions import TruncMonth
 from django.contrib import auth
 from django.http import JsonResponse
-from django.db.models import Count
+from django.db.models import Count,F
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
 from .Myforms import *
 from . import models
 import random
+import json
 
 
 # 登陆
@@ -16,21 +17,11 @@ def login(request):
 
         response = {"user": None, "msg": None}
 
-<<<<<<< HEAD
         username = request.POST.get("user")
         password = request.POST.get("pwd")
         view_code = str(request.POST.get("view_code"))
         view_code_str = request.session.get("view_code_str")
 
-=======
-        #接收数据
-        user = request.POST.get("user")
-        pwd = request.POST.get("pwd")
-        view_code = str(request.POST.get("view_code"))
-        view_code_str = request.session.get("view_code_str")
-
-
->>>>>>> origin/master
         if view_code.upper() == view_code_str.upper():
             user = auth.authenticate(username=username, password=password)
             if user:
@@ -67,15 +58,13 @@ def get_view_code_img(request):
 
         view_code_str += random_char
 
-
-<<<<<<< HEAD
     # 干扰线，噪点
-=======
+
     # width = 150
     # height = 35
 
     # 噪点和干扰线
->>>>>>> origin/master
+
     # for i in range(6):
     #     x1 = random.randint(0, width)
     #     y1 = random.randint(0, height)
@@ -90,10 +79,7 @@ def get_view_code_img(request):
     #     darw.arc((x, y, x + 4, y + 4), 0, 90, fill=get_img_color())
 
     request.session['view_code_str'] = view_code_str
-<<<<<<< HEAD
-=======
 
->>>>>>> origin/master
     f = BytesIO()
     img.save(f, "png")
     data = f.getvalue()
@@ -134,7 +120,6 @@ def register(request):
     return render(request, 'register.html', {"form": form})
 
 
-<<<<<<< HEAD
 # 首页
 def index(requset):
     article_list = models.Article.objects.all()
@@ -151,7 +136,6 @@ def logout(request):
 
 # 个人站点视图
 def home_site(request, username, **kwargs):
-
     user = UserInfo.objects.filter(username=username).first()
 
     # 判断用户存在
@@ -187,26 +171,59 @@ def home_site(request, username, **kwargs):
 
 # 文章详情
 def article_detail(request, username, article_id):
-
     user = models.UserInfo.objects.filter(username=username).first()
     blog = user.blog
 
     article_obj = models.Article.objects.filter(pk=article_id).first()
-    print(article_obj)
+    comment_list = models.Comment.objects.filter(article_id=article_id)
 
     return render(request, "article_detail.html", locals())
 
 
-
-#点赞
+# 点赞
 def digg(request):
 
-    print(request.POST)
+    article_id = request.POST.get("article_id")
+    is_up = json.loads(request.POST.get("is_up"))
+    user_id = request.user.pk
 
-    return HttpResponse("OK")
-=======
+    print(is_up)
 
-def index(request):
+    user = models.ArticleUpDown.objects.filter(article_id=article_id,user_id=user_id).first()
 
-    return render(request,'index.html')
->>>>>>> origin/master
+    response={"state":True}
+    if not user:
+
+        models.ArticleUpDown.objects.create(user_id=user_id, article_id=article_id, is_up=is_up)
+
+        if is_up:
+            models.Article.objects.filter(nid=article_id).update(up_count=F("up_count")+1)
+        else:
+            models.Article.objects.filter(nid=article_id).update(down_count=F("down_count")+1)
+
+    else:
+        response["state"] = False
+        response["handle"] = user.is_up
+
+    return JsonResponse(response)
+
+
+
+#评论
+def comment(request):
+
+   print(request.POST)
+
+   user_id = request.user.pk
+   article_id = request.POST.get("article_id")
+   pid = request.POST.get("pid")
+   content = request.POST.get("content")
+
+   comment = models.Comment.objects.create(article_id=article_id,user_id=user_id,parent_comment_id=pid,content=content)
+
+   response = {}
+   response["create_time"] = comment.create_time.strftime("%Y-%m-%d %X")
+   response["username"] = comment.user.username
+   response["content"] = comment.content
+
+   return JsonResponse(response)

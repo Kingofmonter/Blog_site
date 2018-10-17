@@ -25,11 +25,7 @@ urlpatterns = [
     path('login/',views.login),
     path('logout/', views.logout),
     path('register/',views.register),
-<<<<<<< HEAD
-    path('index/', views.index),
-=======
-    path('index/',views.index),
->>>>>>> origin/master
+
     path('get_view_code_img/',views.get_view_code_img),
     path('digg/',views.digg),
     re_path('^$', views.index),
@@ -40,5 +36,8 @@ urlpatterns = [
     #个人站点
     re_path('^(?P<username>\w+)$',views.home_site),
     re_path('^(?P<username>\w+)/(?P<condition>tag|category|archive)/(?P<param>.*)/$',views.home_site),
-    re_path('^(?P<username>\w+)/articles/(?P<article_id>\d+)',views.article_detail)
+    re_path('^(?P<username>\w+)/articles/(?P<article_id>\d+)',views.article_detail),
+
+    #评论
+    re_path('comment/',views.comment)
 ]

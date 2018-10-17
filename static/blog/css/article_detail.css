@@ -13,6 +13,7 @@
     position: relative;
     margin: 0 auto;
     width: 243px;
+    height: 50px;
 }
 
 .social-main span {
@@ -52,4 +53,148 @@
     width: 70px;
     display: block;
     border: 1px solid #ddd;
+}
+
+#social {
+    position: relative;
+    margin: 50px auto;
+}
+
+.bb-comment .comment-send {
+    margin: 10px 0;
+}
+
+.bb-comment .comment-send .user-face {
+    float: left;
+    margin: 7px 0 0 5px;
+    position: relative;
+}
+
+.bb-comment .comment-send .textarea-container {
+    position: relative;
+    margin-left: 85px;
+    margin-right: 80px;
+}
+
+.bb-comment .comment-send .textarea-container .ipt-arrow {
+    position: absolute;
+    left: -12px;
+    top: 22px;
+    /*background: url(../../dist/images/icons-comment.png) -395px -340px no-repeat;*/
+    width: 13px;
+    height: 20px;
+    display: inline-block;
+    z-index: 2;
+}
+
+.bb-comment .comment-send .textarea-container textarea {
+    font-size: 12px;
+    display: inline-block;
+    box-sizing: border-box;
+    background-color: #f4f5f7;
+    border: 1px solid #e5e9ef;
+    overflow: auto;
+    border-radius: 4px;
+    color: #555;
+    width: 100% !important;
+    height: 65px;
+    transition: 0s;
+    padding: 5px 10px;
+    line-height: normal;
+}
+
+.bb-comment .comment-send .comment-submit {
+    width: 70px;
+    height: 64px;
+    position: absolute;
+    right: -80px;
+    top: 0;
+    padding: 4px 15px;
+    font-size: 14px;
+    color: #fff;
+    border-radius: 4px;
+    text-align: center;
+    min-width: 60px;
+    vertical-align: top;
+    cursor: pointer;
+    background-color: #00a1d6;
+    border: 1px solid #00a1d6;
+    transition: .1s;
+    user-select: none;
+    outline: none;
+}
+
+.bb-comment .comment-send .comment-emoji {
+    padding: 0;
+    width: 66px;
+    height: 24px;
+    color: #99a2aa;
+    border: 1px solid #e5e9ef;
+    border-radius: 4px;
+    position: relative;
+    z-index: 101;
+    font-size: 12px;
+    text-align: center;
+    line-height: 23px;
+    margin-left: 86px;
+    margin-top: 3px;
+    cursor: pointer;
+}
+
+.bb-comment .comment-list .list-item .user-face {
+    float: left;
+    margin: 24px 0 0 5px;
+    position: relative;
+}
+
+.bb-comment .comment-list .list-item .con {
+    position: relative;
+    margin-left: 85px;
+    padding: 22px 0 14px;
+    border-top: 1px solid #e5e9ef;
+}
+
+.bb-comment .comment-list .list-item .user {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 18px;
+    padding-bottom: 4px;
+    display: block;
+    word-wrap: break-word;
+}
+
+.bb-comment .comment-list .list-item .user .name {
+    color: #6d757a;
+}
+
+.bb-comment .comment-list .list-item .text {
+    line-height: 20px;
+    padding: 2px 0;
+    font-size: 14px;
+    text-shadow: none;
+    overflow: hidden;
+    word-wrap: break-word;
+    word-break: break-word;
+}
+
+.bb-comment .comment-list .list-item .info {
+    color: #99a2aa;
+    line-height: 26px;
+    font-size: 12px;
+}
+
+.bb-comment .comment-list .list-item .info>span {
+    margin-right: 20px;
+}
+
+.bb-comment .comment-list .list-item .info .btn-hover {
+    padding: 0 5px;
+    border-radius: 4px;
+    margin-right: 15px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.paging-box {
+    font-size: 12px;
 }

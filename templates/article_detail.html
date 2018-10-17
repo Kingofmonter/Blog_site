@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <script src="/static/blog/js/updown.js"></script>
 
     {% csrf_token %}
 
@@ -10,19 +9,173 @@
         <div class="container">
             {{ article_obj.content|safe }}
         </div>
+    </div>
+    <div id="social">
         <div class="social-main">
-            <span class="like">
-                <a href="javascript:;" title="点赞" class="like-up action"><i
-                        class="be be-thumbs-up-o"></i>赞 <i class="count">{{ article_obj.is_up }}</i>
-                </a>
-            </span>
+                <span class="like like-up">
+                    <a href="javascript:;" title="点赞" class="action"></i>赞 <i class="up_count">{{ article_obj.up_count }}</i>
+                    </a>
+                </span>
 
             <span class="dislike">
-                <a href="javascript:;" title="点赞" class="dislike-down action"><i
-                        class="be be-thumbs-up-o"></i>踩<i class="count">0</i>
-                </a>
-            </span>
+                    <a href="javascript:;" title="点赞" class="action">踩<i
+                            class="down_count">{{ article_obj.down_count }}</i>
+                    </a>
+                </span>
             <div class="clear"></div>
+            <div class="diggword" id="digg_tips" style="color: red;"></div>
         </div>
     </div>
+
+    <div class="bb-comment panel panel-primary">
+
+        <div class="comment-list">
+            {% for comment in comment_list %}
+                <div class="list-item reply-wrap " data-id="1130348692" data-index="7">
+                    <div class="user-face"><a href="" target="_blank" data-usercard-mid="26492956"><img
+                            src="" alt=""></a>
+                    </div>
+                    <div class="con ">
+                        <div class="user"><a href="" class="name ">{{ comment.user.username }}</a>
+                        </div>
+                        <p class="text">{{ comment.content }}</p>
+                        <div class="info">
+                            <span class="floor">#{{ forloop.counter }}</span>
+                            <span>{{ comment.create_time|date:"Y-m-d H:i" }}</span>
+                            <span class="reply btn-hover">回复</span>
+
+                        </div>
+                        <div class="reply-box"></div>
+                        <div class="paging-box"></div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+
+        <div class="panel-heading" style="padding-left: 85px;">发表评论</div>
+        <div class="comment-send panel-body">
+            <div class="user-face"><img class="user-head" src="">
+            </div>
+            <div class="textarea-container">
+                <i class="ipt-arrow"></i>
+                <textarea cols="80" name="msg" rows="5" placeholder="请自觉遵守互联网相关的政策法规，严禁发布色情、暴力、反动的言论。" class="ipt-txt"></textarea>
+                <button type="submit" class="comment-submit">发表评论</button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        $(function () {
+
+            $(".social-main span").click(function () {
+
+                var is_up = $(this).hasClass("like-up");
+
+                $.ajax({
+                    url: "/digg/",
+                    type: "post",
+                    data: {
+                        "csrfmiddlewaretoken": $("[name='csrfmiddlewaretoken']").val(),
+                        "is_up": is_up,
+                        "article_id": "{{article_obj.pk}}"
+                    },
+                    success: function (data) {
+
+                        console.log(data);
+
+                        if (data.state) {
+                            if (is_up) {
+                                var val = parseInt($(".up_count").text());
+                                $(".up_count").text(val + 1)
+                            } else {
+                                var val = parseInt($(".down_count").text());
+                                $(".down_count").text(val + 1)
+                            }
+
+                        } else {
+                            if (data.handle==true){
+                                $("#digg_tips").html("你已经赞过了");
+                            } else {
+                                $("#digg_tips").html("你已经踩过了");
+                            }
+
+
+                            setTimeout(function () {
+                                $("#digg_tips").html("")
+                            }, 1000)
+                        }
+
+                    }
+                })
+
+            })
+
+            $(".comment-submit").click(function () {
+
+                var content = $(".ipt-txt").val();
+                var pid = ""
+
+                $.ajax({
+                    url: "/comment/",
+                    type: "post",
+                    data: {
+                        "csrfmiddlewaretoken": $("[name='csrfmiddlewaretoken']").val(),
+                        "article_id": "{{article_obj.pk}}",
+                        "content": content,
+                        "pid": pid
+
+                    },
+                    success: function (data) {
+                        console.log(data)
+
+                        var create_time = data.create_time;
+                        var username = data.username;
+                        var content = data.content;
+
+                        var s = `<div class="list-item reply-wrap " data-id="1130348692" data-index="7">
+                                <div class="user-face"><a href="" target="_blank" data-usercard-mid="26492956"><img src="" alt=""></a>
+                                </div>
+                                <div class="con ">
+                                    <div class="user"><a href="" class="name ">${username}</a>
+                                    </div>
+                                    <p class="text">${content}</p>
+                                    <div class="info"><span class="floor">#{{ forloop.counter }}</span><span>${create_time}</span><span class="reply btn-hover">回复</span>
+                                    </div>
+                                    <div class="reply-box"></div>
+                                    <div class="paging-box"></div>
+                                </div>
+                            </div>`
+
+                        $("div .comment-list").append(s)
+
+                        $(".ipt-txt").val("");
+                    }
+                })
+
+            })
+
+            $(".btn-hover").click(function () {
+
+                $(".ipt-txt").focus()
+
+                $.ajax({
+                    url: "/digg/",
+                    type: "post",
+                    data: {
+                        "csrfmiddlewaretoken": $("[name='csrfmiddlewaretoken']").val(),
+
+                    },
+                    success:function (data) {
+
+                    }
+                }
+
+            })
+
+        })
+
+    </script>
 {% endblock %}
