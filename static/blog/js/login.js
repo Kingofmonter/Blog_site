@@ -22,7 +22,7 @@ $(function () {
 
                if(data.user){
                    console.log(1)
-                   location.href='/index/'
+                   location.href = '/index/'
                }
                else {
                    $(".error").text(data.msg).css({"color":"red","margin-left":"15px"})

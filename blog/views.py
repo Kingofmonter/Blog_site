@@ -3,12 +3,14 @@ from django.db.models.functions import TruncMonth
 from django.contrib import auth
 from django.http import JsonResponse
 from django.db.models import Count,F
+from django.db import transaction
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
 from .Myforms import *
 from . import models
-import random
-import json
+from Blog_site import settings
+import json,os,random
+from bs4 import BeautifulSoup
 
 
 # 登陆
@@ -212,14 +214,18 @@ def digg(request):
 #评论
 def comment(request):
 
-   print(request.POST)
-
    user_id = request.user.pk
    article_id = request.POST.get("article_id")
    pid = request.POST.get("pid")
    content = request.POST.get("content")
+   soup = BeautifulSoup(content, "html.parser")
 
-   comment = models.Comment.objects.create(article_id=article_id,user_id=user_id,parent_comment_id=pid,content=content)
+   for tag in soup.find_all():
+       if tag.name == 'script':
+           tag.decompose()
+
+   comment = models.Comment.objects.create(article_id=article_id,user_id=user_id,parent_comment_id=pid,content=str(soup))
+   models.Article.objects.filter(pk=article_id).update(comment_count=F("comment_count")+1)
 
    response = {}
    response["create_time"] = comment.create_time.strftime("%Y-%m-%d %X")
@@ -227,3 +233,50 @@ def comment(request):
    response["content"] = comment.content
 
    return JsonResponse(response)
+
+
+#个人文章管理
+def cn_backend(request):
+
+    article_list = models.Article.objects.filter(user=request.user)
+
+    return render(request,'backend.html',locals())
+
+
+#文章添加
+def add_article(request):
+
+    if request.method == 'POST':
+
+        title = request.get("title")
+        content = request.get("content")
+        soup = BeautifulSoup(content,"html.parser")
+
+        for tag in soup.find_all():
+            if tag.name == 'script':
+                tag.decompose()
+
+        desc = soup.text[0:150]
+
+        models.Article.objects.create(title=title,content=str(soup),user=request.user,desc=desc)
+        return render("/cn_backend/")
+
+    return render(request,'add_article.html',locals())
+
+
+
+#文件下载
+def upload(requset):
+
+    print(requset.FILES)
+
+    img = requset.FILES.get("upload_img")
+    path = os.path.join(settings.MEDIA_ROOT,"upload_img",img.name)
+
+    with open(path,'wb') as f:
+        for line in img:
+            f.write(line)
+
+    response = {"error":0,"url":"/media/upload_img/%s"%img.name}
+
+    return HttpResponse(json.dumps(response))

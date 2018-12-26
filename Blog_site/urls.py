@@ -25,6 +25,8 @@ urlpatterns = [
     path('login/',views.login),
     path('logout/', views.logout),
     path('register/',views.register),
+    path('upload/', views.upload),
+    path('index/', views.index),
 
     path('get_view_code_img/',views.get_view_code_img),
     path('digg/',views.digg),
@@ -39,5 +41,9 @@ urlpatterns = [
     re_path('^(?P<username>\w+)/articles/(?P<article_id>\d+)',views.article_detail),
 
     #评论
-    re_path('comment/',views.comment)
+    re_path('comment/',views.comment),
+
+    #后台管理
+    re_path('cn_backend/$',views.cn_backend),
+    re_path('cn_backend/add_article', views.add_article)
 ]

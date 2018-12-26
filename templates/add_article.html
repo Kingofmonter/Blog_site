@@ -1,0 +1,45 @@
+{% extends 'backend_base.html' %}
+
+{% block content %}
+    {% csrf_token %}
+    <h2 class="text-center">文章编辑</h2>
+
+    <div class="container">
+
+        <div class="row">
+            <div class="col-sm"></div>
+
+            <div class="col-sm">
+
+                <p class="text-left">标题</p>
+                <input class="form-control form-control-lg" type="text" placeholder="文章标题">
+                <label>文章内容（Kindeditor编辑器，不支持拖放/粘贴上传图片）</label>
+                <div>
+                    <textarea name="content" id="article_content" cols="10" rows="40"></textarea>
+                </div>
+                <input type="submit" class="btn btn-block">
+            </div>
+
+            <div class="col-sm"></div>
+        </div>
+
+    </div>
+
+    <script charset="utf-8" src="/static/blog/kindeditor-4.1.11-zh-CN/kindeditor/kindeditor-all.js"></script>
+
+    <script>
+        KindEditor.ready(function (K) {
+            window.editor = K.create('#article_content',{
+                resizeType: 0,
+                uploadJson:'/upload/',
+                extraFileUploadParams:{
+                    csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val()
+                },
+                filePostName:"upload_img"
+            });
+
+
+        });
+    </script>
+
+{% endblock %}

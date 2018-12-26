@@ -1,0 +1,22 @@
+{% extends 'backend_base.html' %}
+
+{% block content %}
+
+    <ul class="list-group">
+        <li class="list-group-item active">文章</li>
+
+        {% for article in article_list %}
+
+            <li class="list-group-item">{{ article.title }}<button class="btn btn-danger" style="margin-left: 80px">删除</button></li>
+
+        {% endfor %}
+
+    </ul>
+
+    <div class="container">
+
+        <button class="btn btn-hover" style="margin-left: 250px;margin-top: 50px;"><a href="/cn_backend/add_article/$">添加文章</a></button>
+    </div>
+
+
+{% endblock %}

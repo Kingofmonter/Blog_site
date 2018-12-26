@@ -13,7 +13,8 @@
     <div id="social">
         <div class="social-main">
                 <span class="like like-up">
-                    <a href="javascript:;" title="点赞" class="action"></i>赞 <i class="up_count">{{ article_obj.up_count }}</i>
+                    <a href="javascript:;" title="点赞" class="action"></i>赞 <i
+                            class="up_count">{{ article_obj.up_count }}</i>
                     </a>
                 </span>
 
@@ -31,44 +32,50 @@
 
         <div class="comment-list">
             {% for comment in comment_list %}
-                <div class="list-item reply-wrap " data-id="1130348692" data-index="7">
-                    <div class="user-face"><a href="" target="_blank" data-usercard-mid="26492956"><img
-                            src="" alt=""></a>
-                    </div>
+
+                <div class="list-item reply-wrap">
                     <div class="con ">
-                        <div class="user"><a href="" class="name ">{{ comment.user.username }}</a>
+                        <div class="user"><a href="" class="name">{{ comment.user.username }}</a>
                         </div>
+                    {% if comment.parent_comment_id %}
+                        <div class="card">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">{{ comment.parent_comment.user.username }}:{{ comment.parent_comment.content }}</li>
+                            </ul>
+
+                        </div>
+                    {% endif %}
                         <p class="text">{{ comment.content }}</p>
                         <div class="info">
                             <span class="floor">#{{ forloop.counter }}</span>
                             <span>{{ comment.create_time|date:"Y-m-d H:i" }}</span>
-                            <span class="reply btn-hover">回复</span>
-
+                            <span class="reply btn-hover" username="{{ comment.user.username }}" comment_id="{{ comment.pk }}">回复</span>
                         </div>
-                        <div class="reply-box"></div>
-                        <div class="paging-box"></div>
-                    </div>
+
+
+                    <div class="paging-box"></div>
+                </div>
                 </div>
             {% endfor %}
-        </div>
+    </div>
 
 
-        <div class="panel-heading" style="padding-left: 85px;">发表评论</div>
-        <div class="comment-send panel-body">
-            <div class="user-face"><img class="user-head" src="">
-            </div>
-            <div class="textarea-container">
-                <i class="ipt-arrow"></i>
-                <textarea cols="80" name="msg" rows="5" placeholder="请自觉遵守互联网相关的政策法规，严禁发布色情、暴力、反动的言论。" class="ipt-txt"></textarea>
-                <button type="submit" class="comment-submit">发表评论</button>
-            </div>
+    <div class="panel-heading" style="padding-left: 85px;">发表评论</div>
+    <div class="comment-send panel-body">
+        <div class="textarea-container">
+            <i class="ipt-arrow"></i>
+            <textarea cols="80" name="msg" rows="5" placeholder="请自觉遵守互联网相关的政策法规，严禁发布色情、暴力、反动的言论。"
+                      class="ipt-txt"></textarea>
+            <button class="comment-submit">发表评论</button>
         </div>
+    </div>
     </div>
 
 
 
     <script>
         $(function () {
+
 
             $(".social-main span").click(function () {
 
@@ -96,7 +103,7 @@
                             }
 
                         } else {
-                            if (data.handle==true){
+                            if (data.handle == true) {
                                 $("#digg_tips").html("你已经赞过了");
                             } else {
                                 $("#digg_tips").html("你已经踩过了");
@@ -113,10 +120,12 @@
 
             })
 
+            var pid = ""
+            var flag = true
+
             $(".comment-submit").click(function () {
 
-                var content = $(".ipt-txt").val();
-                var pid = ""
+                var content = $(this).siblings("textarea").val();
 
                 $.ajax({
                     url: "/comment/",
@@ -129,17 +138,15 @@
 
                     },
                     success: function (data) {
-                        console.log(data)
+
 
                         var create_time = data.create_time;
                         var username = data.username;
                         var content = data.content;
 
-                        var s = `<div class="list-item reply-wrap " data-id="1130348692" data-index="7">
-                                <div class="user-face"><a href="" target="_blank" data-usercard-mid="26492956"><img src="" alt=""></a>
-                                </div>
+                        var s = `<div class="list-item reply-wrap ">
                                 <div class="con ">
-                                    <div class="user"><a href="" class="name ">${username}</a>
+                                    <div class="user"><a href="" class="name">${username}</a>
                                     </div>
                                     <p class="text">${content}</p>
                                     <div class="info"><span class="floor">#{{ forloop.counter }}</span><span>${create_time}</span><span class="reply btn-hover">回复</span>
@@ -152,26 +159,71 @@
                         $("div .comment-list").append(s)
 
                         $(".ipt-txt").val("");
+                        pid = "";
                     }
                 })
 
             })
 
+
             $(".btn-hover").click(function () {
 
-                $(".ipt-txt").focus()
-
-                $.ajax({
-                    url: "/digg/",
-                    type: "post",
-                    data: {
-                        "csrfmiddlewaretoken": $("[name='csrfmiddlewaretoken']").val(),
-
-                    },
-                    success:function (data) {
-
-                    }
+                if (flag) {
                 }
+
+
+                var son = $(this)
+
+                var s = `<div class="comment-send panel-body">
+                            <div class="user-face"><img class="user-head" src="">
+                            </div>
+                            <div class="textarea-container">
+                                <i class="ipt-arrow"></i>
+                                <textarea cols="80" name="msg" rows="5" placeholder="请自觉遵守互联网相关的政策法规，严禁发布色情、暴力、反动的言论。"
+                                          class="ipt-txt-son"></textarea>
+                                <button class="comment-submit">发表评论</button>
+                            </div>
+                        </div>`
+
+                son.after(s)
+
+
+                $(".ipt-txt-son").focus()
+                var val = "@" + $(this).attr("username") + "\n"
+                $(".ipt-txt-son").val(val);
+                pid = $(this).attr("comment_id")
+
+
+                $(this).next().children(".textarea-container").children(".comment-submit").click(function () {
+
+                    var content = $(".ipt-txt-son").val();
+                    $.ajax({
+                        url: "/comment/",
+                        type: "post",
+                        data: {
+                            "csrfmiddlewaretoken": $("[name='csrfmiddlewaretoken']").val(),
+                            "article_id": "{{article_obj.pk}}",
+                            "content": content,
+                            pid: pid,
+
+                        },
+                        success: function (data) {
+
+                            var create_time = data.create_time;
+                            var username = data.username;
+                            var content = data.content;
+
+                            var l = `
+                            `
+                            console.log(3)
+
+                            son.parent().siblings(".paging-box").append(l)
+                            console.log(4)
+
+                            son.next().empty()
+                        }
+                    })
+                })
 
             })
 
